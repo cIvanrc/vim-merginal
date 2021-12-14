@@ -1,7 +1,11 @@
 call merginal#modulelib#makeModule(s:, 'base', '')
 
+if !exists('g:RemoteBranchesVisible')
+  let g:RemoteBranchesVisible = 1
+end
+
 let s:f.helpVisible = 0
-let s:f.remoteVisible = get(g:, 'merginal_remoteVisible', 1)
+let s:f.remoteVisible = get(g:, 'merginal_remoteVisible', g:RemoteBranchesVisible)
 let s:f.filter = ''
 
 function! s:flattenAppend(target, items) abort
