@@ -61,6 +61,7 @@ function! s:f.deleteBranchUnderCursor() dict abort
 
     if l:branch.isLocal
       if g:DeleteBranchWithoutWarning
+        let l:answer = 'yes'
         call self.gitEcho('branch', '-D', l:branch.handle, '--')
       else
         let l:answer = 'yes' == input('Delete branch `'.l:branch.handle.'`? (type "yes" to confirm) ')
@@ -69,6 +70,7 @@ function! s:f.deleteBranchUnderCursor() dict abort
         "Deleting remote branches needs a special warning
         let l:answer = 'yes-remote' == input('Delete remote(!) branch `'.l:branch.handle.'`? (type "yes-remote" to confirm) ')
     endif
+
     if l:answer
         if l:branch.isLocal
           if !g:DeleteBranchWithoutWarning
