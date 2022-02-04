@@ -54,15 +54,26 @@ call s:f.addCommand('promptToCreateNewBranch', [], 'MerginalNewBranch', ['aa', '
 function! s:f.deleteBranchUnderCursor() dict abort
     let l:branch = self.branchDetails('.')
     let l:answer = 0
+
+    if !exists('g:DeleteBranchWithoutWarning')
+      let g:DeleteBranchWithoutWarning = 0
+    end
+
     if l:branch.isLocal
+      if g:DeleteBranchWithoutWarning
+        call self.gitEcho('branch', '-D', l:branch.handle, '--')
+      else
         let l:answer = 'yes' == input('Delete branch `'.l:branch.handle.'`? (type "yes" to confirm) ')
+      endif
     elseif l:branch.isRemote
         "Deleting remote branches needs a special warning
         let l:answer = 'yes-remote' == input('Delete remote(!) branch `'.l:branch.handle.'`? (type "yes-remote" to confirm) ')
     endif
     if l:answer
         if l:branch.isLocal
+          if !g:DeleteBranchWithoutWarning
             call self.gitEcho('branch', '-D', l:branch.handle, '--')
+          endif
         else
             call self.gitBang('push', l:branch.remote, '--delete', l:branch.name, '--')
         endif
